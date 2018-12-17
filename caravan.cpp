@@ -12,6 +12,10 @@
 */
 #include "caravan.h"
 
+struct CaravanImplementation{
+  
+}
+
 Caravan new_caravan()
 {
   return 0;
