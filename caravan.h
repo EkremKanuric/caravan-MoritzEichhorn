@@ -14,6 +14,7 @@
 #define CARAVAN_H
 
 #include "pack_animal.h"
+#include "general.h"
 
 /**
 * Initialisiert eine Karawane. D. h., dass es alle in der Karawane befindlichen Tiere aus der
