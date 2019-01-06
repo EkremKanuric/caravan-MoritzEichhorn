@@ -109,14 +109,45 @@ void remove_pack_animal(Caravan caravan, PackAnimal animal)
 
 int get_caravan_load(Caravan caravan)
 {
-  return 0;
+  int length = get_length(caravan);
+  int load_count = 0;
+  Node* crnt_node = caravan->head;
+
+  for(int i = 0; i < length; i++){
+    load_count += crnt_node->pack_animal->load;
+    crnt_node = crnt_node->next;
+  }
+  return load_count;
 }
 
 void unload(Caravan caravan)
 {
+  int length = get_length(caravan);
+
+  Node* crnt_node = caravan->head;
+
+  for(int i = 0; i < length; i++){
+    crnt_node->pack_animal->load = 0;
+    crnt_node = crnt_node->next;
+  }
 }
 
 int get_caravan_speed(Caravan caravan)
 {
-  return 0;
+  int lowest_speed = 51; //50 weil kein Tier schneller als 50 sein kann
+  int length = get_length(caravan);
+
+  Node* crnt_node = caravan->head;
+
+  for(int i = 0; i < length; i++){
+    if(get_actual_speed(crnt_node->pack_animal) < lowest_speed){
+      lowest_speed = get_actual_speed(crnt_node->pack_animal);
+    }
+    crnt_node = crnt_node->next;
+  }
+
+  if(lowest_speed == 51){
+    lowest_speed = 0;
+  }
+  return lowest_speed;
 }
