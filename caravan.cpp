@@ -33,7 +33,7 @@ struct PackAnimalImplementation {
 Caravan new_caravan()
 {
   Caravan caravan = (Caravan)malloc(sizeof(struct CaravanImplementation));
-  get_free_list()[get_free_list_length()] = caravan;
+  caravan->head = 0;
   return caravan;
 }
 
@@ -51,17 +51,27 @@ int get_length(Caravan caravan)
 
 void delete_caravan(Caravan caravan)
 {
+  int length = get_length(caravan);
+
+  for(int i = 0; i < length; i++){
+    Node* head = caravan->head;
+    caravan->head = head->next;
+    sfree(head);
+  }
+
+  sfree(caravan);
 }
 
 void add_pack_animal(Caravan caravan, PackAnimal animal)
 {
-  if(animal->caravan == caravan){
+  if((animal == 0) || (animal->caravan == caravan)){
     return;
   }
   if(animal->caravan != 0){
-
+    remove_pack_animal(animal->caravan, animal);
   }
 
+  animal->caravan = caravan;
   Node* new_node = (Node*)malloc(sizeof(Node));
 
   new_node->pack_animal = animal;
@@ -71,6 +81,30 @@ void add_pack_animal(Caravan caravan, PackAnimal animal)
 
 void remove_pack_animal(Caravan caravan, PackAnimal animal)
 {
+  Node* crnt_node = caravan->head;
+
+  if(crnt_node == 0 || animal == 0){
+    return;
+  }
+
+  animal->caravan = 0;
+  if(crnt_node->pack_animal == animal){
+    caravan->head = crnt_node->next;
+    sfree(crnt_node);
+    return;
+  }
+
+  while((crnt_node->next != 0) && (crnt_node->next->pack_animal != animal)){
+    crnt_node = crnt_node->next;
+  }
+
+  if(crnt_node->next == 0){
+    return;
+  }
+
+  Node* node_next = crnt_node->next;
+  crnt_node->next = node_next->next;
+  sfree(node_next);
 }
 
 int get_caravan_load(Caravan caravan)
