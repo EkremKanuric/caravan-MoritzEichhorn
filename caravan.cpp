@@ -22,14 +22,6 @@ struct CaravanImplementation{
   Node* head;
 };
 
-struct PackAnimalImplementation {
-	AnimalType type;
-	const char *name;
-	int max_speed;
-	int load;
-	Caravan caravan;
-};
-
 Caravan new_caravan()
 {
   Caravan caravan = (Caravan)malloc(sizeof(struct CaravanImplementation));
@@ -64,14 +56,14 @@ void delete_caravan(Caravan caravan)
 
 void add_pack_animal(Caravan caravan, PackAnimal animal)
 {
-  if((animal == 0) || (animal->caravan == caravan)){
+  if((animal == 0) || (get_caravan(animal) == caravan)){
     return;
   }
-  if(animal->caravan != 0){
-    remove_pack_animal(animal->caravan, animal);
+  if(get_caravan(animal) != 0){
+    remove_pack_animal(get_caravan(animal), animal);
   }
 
-  animal->caravan = caravan;
+  add_to_caravan(animal, caravan);
   Node* new_node = (Node*)malloc(sizeof(Node));
 
   new_node->pack_animal = animal;
@@ -87,7 +79,7 @@ void remove_pack_animal(Caravan caravan, PackAnimal animal)
     return;
   }
 
-  animal->caravan = 0;
+  remove_from_caravan(animal, caravan);
   if(crnt_node->pack_animal == animal){
     caravan->head = crnt_node->next;
     sfree(crnt_node);
@@ -114,7 +106,7 @@ int get_caravan_load(Caravan caravan)
   Node* crnt_node = caravan->head;
 
   for(int i = 0; i < length; i++){
-    load_count += crnt_node->pack_animal->load;
+    load_count += get_load(crnt_node->pack_animal);
     crnt_node = crnt_node->next;
   }
   return load_count;
@@ -127,7 +119,7 @@ void unload(Caravan caravan)
   Node* crnt_node = caravan->head;
 
   for(int i = 0; i < length; i++){
-    crnt_node->pack_animal->load = 0;
+    unload(crnt_node->pack_animal);
     crnt_node = crnt_node->next;
   }
 }
